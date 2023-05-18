@@ -28,6 +28,7 @@ function WritePost({isFixed,showModal,isLogged,changeisLogged}) {
             <div className="button"><button type="button"className={`btn p-0 m-0 btn-bottom  ${selectedOption === 2 ? 'selected' : ''}`} onClick={() => handleOptionClick(2)}>Article</button></div>
             <div className="button"><button type="button"className={`btn p-0 m-0 btn-bottom  ${selectedOption === 3 ? 'selected' : ''}`} onClick={() => handleOptionClick(3)}>Event</button></div>
             <div className="button"><button type="button"className={`btn p-0 m-0 btn-bottom  ${selectedOption === 4 ? 'selected' : ''}`} onClick={() => handleOptionClick(4)}>Education</button></div>
+            <div className="button"><button type="button"className={`btn p-0 m-0 btn-bottom  ${selectedOption === 4 ? 'selected' : ''}`} onClick={() => handleOptionClick(4)}>Jobs</button></div>
               
             <div className="dropdown filter">
                 <button className="dropdown-button filter-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
