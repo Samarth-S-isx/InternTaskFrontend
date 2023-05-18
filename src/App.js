@@ -1,24 +1,26 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+
+
 import './App.css';
 
 function App() {
+
+ const [isLogged,setisLogged] = useState(false)
+ const changeisLogged = ()=>{
+  setisLogged(!isLogged)
+ }
+ const [showModal,setShowModal] = useState(false)
+
+  const handleClick=()=>{
+    setShowModal(!showModal)
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Navbar changeisLogged={changeisLogged} isLogged={isLogged} showModal={showModal} handleClick={handleClick}></Navbar>
+      <HomePage changeisLogged={changeisLogged} isLogged={isLogged} showModal={showModal} handleClick={handleClick}></HomePage>
+   </div>
   );
 }
 
