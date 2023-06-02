@@ -1,26 +1,56 @@
-import React, { useState } from 'react';
-import Navbar from './components/Navbar';
+import React, { useState ,useCallback} from 'react';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import Header from './components/Header';
+import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
+import MovieDescription from './pages/MovieDescription';
+import BookingPage from './pages/BookingPage';
+import { AuthContext } from './context/auth-context';
 
-
-import './App.css';
+import './App.css'
 
 function App() {
 
- const [isLogged,setisLogged] = useState(false)
- const changeisLogged = ()=>{
-  setisLogged(!isLogged)
- }
- const [showModal,setShowModal] = useState(false)
-
-  const handleClick=()=>{
-    setShowModal(!showModal)
+  const [movies,setMovies]=useState([])
+  const setState=(result)=>{
+    setMovies(result)
   }
+  const [isLoggedIn,setIsLoggedIn] = useState(false);
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("")
+
+  const login = useCallback((name,email)=>{
+
+    const user = {name,email}
+    localStorage.setItem('user', JSON.stringify(user));
+    setIsLoggedIn(true)
+    setEmail(email)
+    setName(name)
+  },[])
+
+  
+  const logout = useCallback(()=>{
+    localStorage.removeItem('user');
+    setIsLoggedIn(false)
+    setName(null)
+    setEmail(null)
+  },[])
+
+
   return (
-    <div className="App">
-      <Navbar changeisLogged={changeisLogged} isLogged={isLogged} showModal={showModal} handleClick={handleClick}></Navbar>
-      <HomePage changeisLogged={changeisLogged} isLogged={isLogged} showModal={showModal} handleClick={handleClick}></HomePage>
-   </div>
+    <AuthContext.Provider value = {{isLoggedIn:isLoggedIn,login:login,logout:logout,name:name,email:email}}>
+      <div className="App">
+        <Router>
+          <Header></Header>
+          <Routes>
+            <Route path="/" element={<HomePage setState={setState} />} />
+            <Route path="/auth" element={<LoginPage />} />
+            <Route path="/movie/:id" element={<MovieDescription movies={movies} />} />
+            <Route path="/bookshow/:id" element={<BookingPage movies={movies} />} />
+          </Routes>
+        </Router>
+    </div>
+   </AuthContext.Provider>
   );
 }
 

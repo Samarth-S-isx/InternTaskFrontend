@@ -1,64 +1,36 @@
-import React ,{useState,useEffect}from 'react'
-import Card from '../components/Card'
-import WritePost from '../components/WritePost'
-import Location from '../components/Location'
+import {React,useEffect, useState} from 'react'
 
-function HomePage({showModal,handleClick,isLogged,changeisLogged}) {
+import MovieCard from '../components/MovieCard'
 
-  const [isFixed,setisFixed]  = useState(false)
-  const [joined,setJoined] = useState(false)
-  const data = [
-    
-  ]
 
-  const handleGroupClick = ()=>{
-    if(!isLogged){
-      handleClick()
-      setJoined(!joined)
-    }else{
-      setJoined(!joined)
-      changeisLogged()
-    }
-  }
+function HomePage({setState}) {
 
-  useEffect(() => {
-    const handleScroll = () => {    
-      const elementAboveBox = document.querySelector('.top-img-box');
-      const elementAboveBoxBottom = elementAboveBox.getBoundingClientRect().bottom;
-      if (elementAboveBoxBottom <= 72) {
-        setisFixed(true);
-      } else {
-        setisFixed(false);
+
+    const [movies,setMovies]=useState([])
+
+    useEffect(() => {
+      const getalldata = async()=>{
+        const URL="https://api.tvmaze.com/search/shows?q=all"
+        const response= await fetch(URL)
+        const result = await response.json()
+        setMovies(result)
+        setState(result)
       }
-    }
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
+      getalldata()
+
+    }, [])
+    
 
   return (
     <>
-    <div className='top-img-box'>
-      <img src="https://res.cloudinary.com/dayc0s1py/image/upload/v1684234390/Images/Rectangle_2_bjz9gs.png"></img>
-      <button className='join-group' onClick={handleGroupClick}> {joined?"Leave Group":"Join Group"}</button>
-      <span id='span1'>Computer Engineering</span>
-      <span id='span2'>142,765 Computer Engineers follow this</span>
-    </div>
-    <div className='pagemain'>
-      <WritePost showModal={showModal} isFixed={isFixed} isLogged={isLogged} changeisLogged={changeisLogged}></WritePost>
-      <div className='d-flex'>
-      <div className={`card-box ${isFixed ? 'fixed' : ''}`}>
-      <Card/>
-      <Card/>
-      <Card/>
-      </div>
-      <Location isFixed={isFixed} isLogged={isLogged}></Location>
-      </div>
-      {isLogged&&<div class="circle">
-      <i class="fa fa-pencil" aria-hidden="true"></i>
-      </div>}
-    </div>
+    <section className='new-movie'>
+        <div className='container'>
+            <div className='row'>
+                {movies.map(movie=>(<MovieCard key={movie.show.id} data={movie.show}></MovieCard>))}
+            </div>
+        </div>
+    </section>
+
     </>
   )
 }
