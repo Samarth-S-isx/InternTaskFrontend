@@ -1,26 +1,43 @@
-import {React,useContext,useEffect} from 'react'
+import {React,useContext,useEffect,useState} from 'react'
 import { Link, useParams,useNavigate} from 'react-router-dom'
 import { AuthContext } from '../context/auth-context';
 import './BookingPage.css'
 
 function BookingPage({movies}) {
-    const auth = useContext(AuthContext)
-    const id = parseInt(useParams().id);
-    const filteredMovies = movies.filter((movie) => movie.show.id === id);
-    const movie = filteredMovies[0].show;
-    const navigate = useNavigate()
-    // console.log(movie,"hi")
 
+    const auth = useContext(AuthContext)
+    const navigate = useNavigate()
+    const id = parseInt(useParams().id);
+    const [movie,setMovie]=useState([])
+    const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-      if(!auth.isLoggedIn){
-        navigate('/auth')
+
+        if(!auth.isLoggedIn){
+            navigate('/auth')
+        }
+      const getalldata = async()=>{
+        const URL="https://api.tvmaze.com/search/shows?q=all"
+        const response= await fetch(URL)
+        const result = await response.json()
+        getmovie(result)
+        setIsLoading(false)
       }
+      getalldata()
+
     }, [])
+    
+    const getmovie=(data)=>{
+      const filteredMovies = data.filter((movie) => movie.show.id === id); 
+      setMovie(filteredMovies[0].show)
+    }
+
     const handleChange=()=>{
+
     }
     
   return (
-    <div className="container booking-container d-lg-flex">
+    <>
+    {!isLoading && <div className="container booking-container d-lg-flex">
         <div className="box-1 bg-light user">
             <div className="box-inner-1 pb-3 mb-3 ">
                 <div className="d-flex justify-content-between mb-3 userdetails">
@@ -94,7 +111,8 @@ function BookingPage({movies}) {
                 </form>
             </div>
         </div>
-    </div>
+    </div>}
+    </>
   )
 }
 

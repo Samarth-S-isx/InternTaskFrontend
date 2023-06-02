@@ -1,18 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams} from 'react-router-dom'
 
 
-function MovieDescription({movies}) {
+function MovieDescription() {
     const id = parseInt(useParams().id) ;
-    const filteredMovies = movies.filter((movie) => movie.show.id === id);
-    const movie = filteredMovies[0].show;
+    // const filteredMovies = movies.filter((movie) => movie.show.id === id);
+    // const movie = filteredMovies[0].show;
     // console.log(movie)
-    const timing = movie.schedule.days.map((day)=>  <li className='time' key={day}>{day} {movie.schedule.time}</li> )
+    const [movie,setMovie]=useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(() => {
+      const getalldata = async()=>{
+        const URL="https://api.tvmaze.com/search/shows?q=all"
+        const response= await fetch(URL)
+        const result = await response.json()
+        getmovie(result)
+        setIsLoading(false)
+      }
+      getalldata()
+
+    }, [])
+    
+    const getmovie=(data)=>{
+      const filteredMovies = data.filter((movie) => movie.show.id === id); 
+      setMovie(filteredMovies[0].show)
+    }
+
+    // const timing = movie.schedule.days.map((day)=>  <li className='time' key={day}>{day} {movie.schedule.time}</li> )
+    const timing=null
   return (
-    <div className="detail-page">
+    <>  
+    {!isLoading && <div className="detail-page">
         <div className=' row content d-flex justify-content-center align-item-center'>
             <div className='col-md-6 d-flex justify-content-center img-colum'>
-              <img src={movie.image.original} alt='someimg'></img>
+              <img src={movie['image']['original']} alt='someimg'></img>
             </div> 
 
             <div className='col-md-6 d-flex flex-column detail-colum'>
@@ -42,7 +63,7 @@ function MovieDescription({movies}) {
               <div className='mt-4'>
                 <h5>Timings</h5>
                 <ul className='timing'>
-                  {timing}
+                  {movie.schedule.days.map((day)=>  <li className='time' key={day}>{day} {movie.schedule.time}</li>)}
                 </ul>
               </div>
               <div className='d-flex justify-content-center button'>
@@ -51,7 +72,8 @@ function MovieDescription({movies}) {
               </div>
           </div>
         </div>
-    </div>
+    </div>}
+    </>
   )
 }
 
