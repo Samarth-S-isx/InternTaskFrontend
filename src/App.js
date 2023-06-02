@@ -1,4 +1,4 @@
-import React, { useState ,useCallback} from 'react';
+import React, { useState ,useCallback,useEffect} from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
@@ -28,6 +28,13 @@ function App() {
     setName(name)
   },[])
 
+  useEffect(() => {
+    if(localStorage.getItem('user')){
+      setIsLoggedIn(true)
+      setEmail('some')
+      setName('some')
+    }
+  }, [])
   
   const logout = useCallback(()=>{
     localStorage.removeItem('user');
